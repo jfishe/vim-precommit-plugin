@@ -8,6 +8,7 @@ dynamic hook completion sourced from `.pre-commit-config.yaml`.
 
 ```text
 vim-precommit-plugin/
+├── CHANGELOG.md
 ├── autoload/precommit.vim
 ├── compiler/pre_commit.vim
 ├── doc/precommit.txt
@@ -100,3 +101,9 @@ details, and compatibility notes:
 
 - <https://pre-commit.com/>
 - <https://prek.j178.dev/>
+
+## Changelog
+
+Project history is tracked in [`CHANGELOG.md`](./CHANGELOG.md), following
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
