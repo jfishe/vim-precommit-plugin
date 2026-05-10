@@ -1,0 +1,32 @@
+name: Create GitHub Release (on tag)
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "[0-9]*.[0-9]*.[0-9]*"
+
+permissions:
+  contents: write
+
+jobs:
+  github-release:
+    name: Create release from changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: CSchoel/release-notes-from-changelog@v1
+        with:
+          end-pattern: '/^## \|^\[/'
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          gh release create "$tag" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="${GITHUB_REPOSITORY#*/} ${RELEASE_VERSION}" \
+            --notes-file RELEASE.md
