@@ -39,6 +39,10 @@ Execute (Register user commands):
   AssertEqual 2, exists(':PreCommitFile')
   AssertEqual 2, exists(':PreCommitInstall')
 
+Execute (Configure compiler from g:precommit_command):
+  execute 'compiler pre_commit'
+  AssertEqual g:precommit_test_runner, &l:makeprg
+
 Execute (Resolve config, project root, and hooks):
   execute 'edit ' . fnameescape(g:precommit_test_file)
   AssertEqual fnamemodify(g:precommit_test_config, ':p'), precommit#ConfigPath()

@@ -66,6 +66,7 @@ let g:precommit_open_qf = 1
 ```
 
 `g:precommit_command` lets you point to a virtualenv-specific binary if needed.
+The bundled `:compiler pre_commit` profile uses the same setting for `makeprg`.
 
 ## Testing
 

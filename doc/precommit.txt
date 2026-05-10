@@ -54,6 +54,7 @@ CONFIGURATION                                 *precommit-configuration*
 g:precommit_command
     Command used to invoke pre-commit. Default: >
       'pre-commit'
+    The |:compiler| profile also uses this value for |'makeprg'|.
 
 g:precommit_open_qf
     When non-zero, open the quickfix window after a run. Default: >
