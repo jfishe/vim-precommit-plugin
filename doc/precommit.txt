@@ -87,6 +87,27 @@ invoke the helper script from the plugin root:
 
     $ VADER_DIR=/path/to/vader.vim ./test/run-tests.sh
 
+ATTRIBUTION AND REFERENCES               *precommit-attribution*
+
+precommit.vim is an integration layer for external hook runners and depends on
+having one available.
+
+The default dependency is pre-commit:
+
+    https://pre-commit.com/
+
+Its command-line interface and .pre-commit-config.yaml format are the primary
+targets for this plugin.
+
+prek is also a relevant supporting reference:
+
+    https://prek.j178.dev/
+
+prek is a Rust implementation designed as a drop-in alternative for
+pre-commit. To use it with this plugin, set:
+
+    let g:precommit_command = 'prek'
+
 LICENSE                                           *precommit-license*
 
 MIT License. See the LICENSE file in the plugin root.

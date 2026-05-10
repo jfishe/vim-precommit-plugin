@@ -78,3 +78,25 @@ Run it with a local `vader.vim` checkout:
 ```bash
 VADER_DIR=/path/to/vader.vim ./test/run-tests.sh
 ```
+
+## Attribution and references
+
+This plugin is an integration layer for external hook runners and depends on
+having one available on your system.
+
+- [`pre-commit`](https://pre-commit.com/) is the default runtime dependency.
+  The plugin's commands, config discovery, and examples are primarily built
+  around the `pre-commit` CLI and `.pre-commit-config.yaml`.
+- [`prek`](https://prek.j178.dev/) is a relevant supporting reference because
+  it is a Rust reimplementation intended as a drop-in alternative for
+  `pre-commit`. You can use it with this plugin by setting:
+
+```vim
+let g:precommit_command = 'prek'
+```
+
+See the upstream project documentation for installation, command/reference
+details, and compatibility notes:
+
+- <https://pre-commit.com/>
+- <https://prek.j178.dev/>
