@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-10
+
+### Added
+
+- GitHub Actions release workflow for publishing releases from pushed version
+  tags.
+- Generic `RELEASE_HEAD.md` content for changelog-derived GitHub release notes.
+
 ## [0.1.0] - 2026-05-10
 
 ### Added
@@ -25,5 +33,6 @@ and this project adheres to [Semantic Versioning].
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/jfishe/vim-precommit-plugin/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/jfishe/vim-precommit-plugin/releases/tag/v0.1.0
+[Unreleased]: https://github.com/jfishe/vim-precommit-plugin/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/jfishe/vim-precommit-plugin/compare/0.1.0...0.1.1
+[0.1.0]: https://github.com/jfishe/vim-precommit-plugin/tree/0.1.0
