@@ -1,0 +1,84 @@
+Execute (Set up project fixture):
+  let g:precommit_test_tmp = tempname()
+  let g:precommit_test_root = g:precommit_test_tmp . '/project'
+  let g:precommit_test_nested = g:precommit_test_root . '/nested'
+  let g:precommit_test_file = g:precommit_test_nested . '/demo.py'
+  let g:precommit_test_config = g:precommit_test_root . '/.pre-commit-config.yaml'
+  let g:precommit_test_pwd = g:precommit_test_tmp . '/pwd.txt'
+  let g:precommit_test_args = g:precommit_test_tmp . '/args.txt'
+  let g:precommit_test_runner = g:precommit_test_tmp . '/fake-pre-commit'
+  call mkdir(g:precommit_test_nested, 'p')
+  call writefile([
+        \ 'repos:',
+        \ '  - repo: https://github.com/pre-commit/pre-commit-hooks',
+        \ '    rev: v5.0.0',
+        \ '    hooks:',
+        \ '      - id: trailing-whitespace',
+        \ "      - id: 'end-of-file-fixer'",
+        \ '      - id: trailing-whitespace  # duplicate',
+        \ ], g:precommit_test_config)
+  call writefile(['print("hello")'], g:precommit_test_file)
+  call writefile([
+        \ '#!/bin/sh',
+        \ 'printf "%s\n" "$PWD" > "$PRECOMMIT_TEST_PWD_FILE"',
+        \ 'printf "%s\n" "$*" > "$PRECOMMIT_TEST_ARGS_FILE"',
+        \ 'printf "%s\n" "$PRECOMMIT_TEST_FILE:3:4: sample failure"',
+        \ 'exit 1',
+        \ ], g:precommit_test_runner)
+  call system('chmod +x ' . shellescape(g:precommit_test_runner))
+  let $PRECOMMIT_TEST_PWD_FILE = g:precommit_test_pwd
+  let $PRECOMMIT_TEST_ARGS_FILE = g:precommit_test_args
+  let $PRECOMMIT_TEST_FILE = fnamemodify(g:precommit_test_file, ':p')
+  let g:precommit_command = g:precommit_test_runner
+  execute 'edit ' . fnameescape(g:precommit_test_file)
+
+Execute (Register user commands):
+  AssertEqual 2, exists(':PreCommit')
+  AssertEqual 2, exists(':PreCommitHook')
+  AssertEqual 2, exists(':PreCommitAll')
+  AssertEqual 2, exists(':PreCommitFile')
+  AssertEqual 2, exists(':PreCommitInstall')
+
+Execute (Resolve config, project root, and hooks):
+  execute 'edit ' . fnameescape(g:precommit_test_file)
+  AssertEqual fnamemodify(g:precommit_test_config, ':p'), precommit#ConfigPath()
+  AssertEqual substitute(fnamemodify(g:precommit_test_root, ':p'), '/$', '', ''), precommit#Root()
+  AssertEqual ['trailing-whitespace', 'end-of-file-fixer'], precommit#HookIds()
+
+Execute (Complete subcommands and hook ids):
+  execute 'edit ' . fnameescape(g:precommit_test_file)
+  AssertEqual ['run'], precommit#Complete('ru', 'PreCommit ru', strlen('PreCommit ru'))
+  AssertEqual ['trailing-whitespace', 'end-of-file-fixer'], precommit#Complete('', 'PreCommit run ', strlen('PreCommit run '))
+  AssertEqual ['trailing-whitespace'], precommit#CompleteHooks('tr', 'PreCommitHook tr', strlen('PreCommitHook tr'))
+  AssertEqual ['end-of-file-fixer'], precommit#Complete('end', 'PreCommit run end', strlen('PreCommit run end'))
+
+Execute (Run current file and populate quickfix):
+  execute 'edit ' . fnameescape(g:precommit_test_file)
+  let cwd = getcwd()
+  let code = precommit#RunCurrentFile('trailing-whitespace')
+  let qf = getqflist({'title': 1, 'items': 1})
+  AssertEqual 1, code
+  AssertEqual cwd, getcwd()
+  AssertEqual 'pre-commit run trailing-whitespace --files demo.py', qf.title
+  AssertEqual substitute(fnamemodify(g:precommit_test_root, ':p'), '/$', '', ''), readfile(g:precommit_test_pwd)[0]
+  AssertEqual 'run trailing-whitespace --files ' . fnamemodify(g:precommit_test_file, ':p'), readfile(g:precommit_test_args)[0]
+  AssertEqual fnamemodify(g:precommit_test_file, ':p'), bufname(qf.items[0].bufnr)
+  AssertEqual 3, qf.items[0].lnum
+  AssertEqual 4, qf.items[0].col
+  AssertEqual 'sample failure', qf.items[0].text
+
+Execute (Clean up test fixture):
+  bwipeout!
+  call delete(g:precommit_test_tmp, 'rf')
+  let $PRECOMMIT_TEST_PWD_FILE = ''
+  let $PRECOMMIT_TEST_ARGS_FILE = ''
+  let $PRECOMMIT_TEST_FILE = ''
+  unlet g:precommit_command
+  unlet g:precommit_test_tmp
+  unlet g:precommit_test_root
+  unlet g:precommit_test_nested
+  unlet g:precommit_test_file
+  unlet g:precommit_test_config
+  unlet g:precommit_test_pwd
+  unlet g:precommit_test_args
+  unlet g:precommit_test_runner

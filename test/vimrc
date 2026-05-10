@@ -1,0 +1,15 @@
+set nocompatible
+set nomore
+set noswapfile
+set shortmess+=I
+
+let s:plugin_root = fnamemodify(expand('<sfile>:p'), ':h:h')
+execute 'set runtimepath^=' . fnameescape(s:plugin_root)
+
+if exists('$VADER_DIR') && isdirectory($VADER_DIR)
+  execute 'set runtimepath^=' . fnameescape($VADER_DIR)
+endif
+
+let g:precommit_open_qf = 0
+
+runtime plugin/precommit.vim

@@ -1,0 +1,93 @@
+*precommit.txt*  Vim pre-commit integration
+
+INTRODUCTION                                   *precommit-introduction*
+
+precommit.vim provides a lightweight interface for running the Python
+pre-commit framework from Vim. It includes quickfix integration, a compiler
+profile, and hook completion sourced from .pre-commit-config.yaml or
+.pre-commit-config.yml in the current project tree.
+
+COMMANDS                                         *precommit-commands*
+
+:PreCommit [args]
+    Run pre-commit with raw arguments. Examples:
+      :PreCommit run
+      :PreCommit run --all-files
+      :PreCommit validate-config
+
+:PreCommitHook {hook-id}
+    Run a specific hook with completion from the local pre-commit config.
+
+:PreCommitAll [hook-id]
+    Run all hooks for all files, or one hook for all files if a hook is given.
+
+:PreCommitFile [hook-id]
+    Run all hooks against the current file, or a specific hook if a hook id is
+    provided.
+
+:PreCommitInstall
+    Run |pre-commit install|.
+
+:PreCommitUpdate
+    Run |pre-commit autoupdate|.
+
+:PreCommitClean
+    Run |pre-commit clean|.
+
+:PreCommitHooks
+    Echo the discovered hook ids from the local pre-commit config.
+
+:PreCommitOpenConfig
+    Open the discovered .pre-commit config file.
+
+COMPLETION                                     *precommit-completion*
+
+Hook completion is built by scanning lines that match:
+
+    - id: hook-name
+
+This keeps the plugin dependency-free while still supporting normal
+pre-commit configuration layouts.
+
+CONFIGURATION                                 *precommit-configuration*
+
+g:precommit_command
+    Command used to invoke pre-commit. Default: >
+      'pre-commit'
+
+g:precommit_open_qf
+    When non-zero, open the quickfix window after a run. Default: >
+      1
+
+COMPILER                                         *precommit-compiler*
+
+Use the bundled compiler profile with:
+
+    :compiler pre_commit
+
+The compiler configures |:make| for users who prefer Vim's native compiler
+workflow in addition to the plugin commands.
+
+INSTALLATION                                 *precommit-installation*
+
+Place the repository on your runtimepath or install it with your plugin
+manager of choice. Then run:
+
+    :helptags {path-to-plugin}/doc
+
+TESTING                                         *precommit-testing*
+
+The plugin ships with a Vader test suite that covers command registration,
+hook discovery and completion, project root detection, and quickfix
+population.
+
+To run the suite, point |$VADER_DIR| at a local checkout of vader.vim and
+invoke the helper script from the plugin root:
+
+    $ VADER_DIR=/path/to/vader.vim ./test/run-tests.sh
+
+LICENSE                                           *precommit-license*
+
+MIT License. See the LICENSE file in the plugin root.
+
+vim:tw=78:ts=8:noet:ft=help:norl:
